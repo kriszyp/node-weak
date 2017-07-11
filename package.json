@@ -15,10 +15,10 @@
     "function",
     "callback"
   ],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "repository": {
     "type": "git",
-    "url": "git://github.com/TooTallNate/node-weak.git"
+    "url": "git://github.com/kriszyp/node-weak.git"
   },
   "main": "lib/weak.js",
   "scripts": {
