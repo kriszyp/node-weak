@@ -92,7 +92,7 @@ NAN_METHOD(Create) {\
   Nan::SetInternalFieldPointer(proxy, 0, targetPersistent);
   //Nan::SetInternalFieldPointer(&targetPersistent, 0, proxy);
 
-  targetPersistent.SetWeak(&proxy, NULL, Nan::WeakCallbackType::kParameter);
+  targetPersistent->SetWeak(&proxy, NULL, Nan::WeakCallbackType::kParameter);
 
   info.GetReturnValue().Set(proxy);
 }
