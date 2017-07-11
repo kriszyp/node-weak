@@ -65,7 +65,7 @@ Local<Object> Unwrap(Local<Object> proxy) {
 
 static void TargetCallback(const Nan::WeakCallbackInfo<proxy_container> &info) {
   std::cout << "target callback\n";
-  Nan::HandleScope scope;
+  /*Nan::HandleScope scope;
   proxy_container *cont = info.GetParameter();
   std::cout << "doing cleanup\n";
 
@@ -75,7 +75,7 @@ static void TargetCallback(const Nan::WeakCallbackInfo<proxy_container> &info) {
   cont->proxy.Reset();
   std::cout << "finished reset\n";
   //delete cont;
-  std::cout << "deleted container\n";
+  std::cout << "deleted container\n";*/
 }
 
 /**
@@ -89,10 +89,10 @@ NAN_METHOD(Create) {\
   Local<Object> proxy = Nan::New<ObjectTemplate>(proxyClass)->NewInstance();
   Nan::Persistent<Object> *targetPersistent = new Nan::Persistent<Object>();
   targetPersistent->Reset(_target);
-  Nan::SetInternalFieldPointer(proxy, 0, targetPersistent);
+  //Nan::SetInternalFieldPointer(proxy, 0, targetPersistent);
   //Nan::SetInternalFieldPointer(&targetPersistent, 0, proxy);
 
-  //targetPersistent->SetWeak(&proxy, NULL, Nan::WeakCallbackType::kParameter);
+  targetPersistent->SetWeak(NULL, TargetCallback, Nan::WeakCallbackType::kParameter);
   //targetPersistent->MarkIndependent();
 
   info.GetReturnValue().Set(proxy);
