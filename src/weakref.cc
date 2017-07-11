@@ -37,19 +37,19 @@ Nan::Callback *globalCallback;
 
 bool IsDead(Local<Object> proxy) {
   assert(proxy->InternalFieldCount() == 1);
-  proxy_container *cont = reinterpret_cast<proxy_container*>(
+  Nan::Persistent<Object> *target = reinterpret_cast<Nan::Persistent<Object>*>(
     Nan::GetInternalFieldPointer(proxy, 0)
   );
-  return cont == NULL || cont->target.IsEmpty();
+  return target == NULL || target->IsEmpty();
 }
 
 
 Local<Object> Unwrap(Local<Object> proxy) {
   assert(!IsDead(proxy));
-  proxy_container *cont = reinterpret_cast<proxy_container*>(
+  Nan::Persistent<Object> *targetPersistent = reinterpret_cast<Nan::Persistent<Object>*>(
     Nan::GetInternalFieldPointer(proxy, 0)
   );
-  Local<Object> _target = Nan::New<Object>(cont->target);
+  Local<Object> _target = Nan::New<Object>(targetPersistent);
   return _target;
 }
 
@@ -85,15 +85,13 @@ static void TargetCallback(const Nan::WeakCallbackInfo<proxy_container> &info) {
 NAN_METHOD(Create) {\
   if (!info[0]->IsObject()) return Nan::ThrowTypeError("Object expected");
 
-  proxy_container *cont = new proxy_container();
-
   Local<Object> _target = info[0].As<Object>();
   Local<Object> proxy = Nan::New<ObjectTemplate>(proxyClass)->NewInstance();
-  cont->proxy.Reset(proxy);
-  cont->target.Reset(_target);
-  Nan::SetInternalFieldPointer(proxy, 0, cont);
+  Nan::Persistent<Object> targetPersistent;
+  targetPersistent.Reset(_target);
+  Nan::SetInternalFieldPointer(proxy, 0, targetPersistent);
 
-  cont->target.SetWeak(cont, TargetCallback, Nan::WeakCallbackType::kParameter);
+  cont->target.SetWeak(cont, NULL);
 
   info.GetReturnValue().Set(proxy);
 }
