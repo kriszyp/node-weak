@@ -72,9 +72,9 @@ static void TargetCallback(const Nan::WeakCallbackInfo<proxy_container> &info) {
   // clean everything up
   Local<Object> proxy = Nan::New<Object>(cont->proxy);
   Nan::SetInternalFieldPointer(proxy, 0, NULL);
-  // cont->proxy.Reset();
+  cont->proxy.Reset();
   std::cout << "finished reset\n";
-  delete cont;
+  //delete cont;
   std::cout << "deleted container\n";
 }
 
@@ -84,7 +84,6 @@ static void TargetCallback(const Nan::WeakCallbackInfo<proxy_container> &info) {
 
 NAN_METHOD(Create) {\
   if (!info[0]->IsObject()) return Nan::ThrowTypeError("Object expected");
-  std::cout << "creating weak\n";
 
   proxy_container *cont = new proxy_container();
 
@@ -97,7 +96,6 @@ NAN_METHOD(Create) {\
   cont->target.SetWeak(cont, TargetCallback, Nan::WeakCallbackType::kParameter);
 
   info.GetReturnValue().Set(proxy);
-  std::cout << "created weak\n";
 }
 
 /**
@@ -127,9 +125,11 @@ NAN_METHOD(IsWeakRef) {
  */
 
 NAN_METHOD(Get) {
+  std::cout << "start get\n";
   WEAKREF_FIRST_ARG
   if (!IsDead(proxy))
   info.GetReturnValue().Set(Unwrap(proxy));
+  std::cout << "finished get\n";
 }
 
 /**
