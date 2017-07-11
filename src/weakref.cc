@@ -38,7 +38,7 @@ Nan::Callback *globalCallback;
 bool IsDead(Local<Object> proxy) {
   assert(proxy->InternalFieldCount() == 1);
   Nan::Persistent<Object> *target = reinterpret_cast<Nan::Persistent<Object>*>(
-    Nan::GetInternalFieldPointer(proxy, 0)
+    Nan::GetInternalFieldPointer(proxy, 1)
   );
   return target == NULL || target->IsEmpty();
 }
@@ -47,7 +47,7 @@ bool IsDead(Local<Object> proxy) {
 Local<Object> Unwrap(Local<Object> proxy) {
   assert(!IsDead(proxy));
   Nan::Persistent<Object> *targetPersistent = reinterpret_cast<Nan::Persistent<Object>*>(
-    Nan::GetInternalFieldPointer(proxy, 0)
+    Nan::GetInternalFieldPointer(proxy, 1)
   );
   Local<Object> _target = Nan::New<Object>(*targetPersistent);
   return _target;
@@ -89,7 +89,7 @@ NAN_METHOD(Create) {\
   Local<Object> proxy = Nan::New<ObjectTemplate>(proxyClass)->NewInstance();
   Nan::Persistent<Object> *targetPersistent = new Nan::Persistent<Object>();
   targetPersistent->Reset(_target);
-  //Nan::SetInternalFieldPointer(proxy, 0, targetPersistent);
+  Nan::SetInternalFieldPointer(proxy, 1, targetPersistent);
   //Nan::SetInternalFieldPointer(&targetPersistent, 0, proxy);
 
   targetPersistent->SetWeak(targetPersistent, TargetCallback, Nan::WeakCallbackType::kParameter);
