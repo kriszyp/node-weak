@@ -92,8 +92,8 @@ NAN_METHOD(Create) {\
   Nan::SetInternalFieldPointer(proxy, 0, targetPersistent);
   //Nan::SetInternalFieldPointer(&targetPersistent, 0, proxy);
 
-  targetPersistent->SetWeak(&proxy, NULL, Nan::WeakCallbackType::kParameter);
-  targetPersistent->MarkIndependent();
+  //targetPersistent->SetWeak(&proxy, NULL, Nan::WeakCallbackType::kParameter);
+  //targetPersistent->MarkIndependent();
 
   info.GetReturnValue().Set(proxy);
 }
@@ -128,8 +128,7 @@ NAN_METHOD(Get) {
   std::cout << "start get\n";
   WEAKREF_FIRST_ARG
   if (!IsDead(proxy))
-  //info.GetReturnValue().Set(Unwrap(proxy));
-  info.GetReturnValue().SetUndefined();
+    info.GetReturnValue().Set(Unwrap(proxy));
   std::cout << "finished get\n";
 }
 
