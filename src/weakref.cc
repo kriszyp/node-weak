@@ -88,12 +88,11 @@ NAN_METHOD(Create) {\
   Local<Object> _target = info[0].As<Object>();
   Local<Object> proxy = Nan::New<ObjectTemplate>(proxyClass)->NewInstance();
   Nan::Persistent<Object> targetPersistent(_target);
-  int *data = new int(0);
   //targetPersistent.Reset(_target);
-  //Nan::SetInternalFieldPointer(proxy, 0, NULL);
+  Nan::SetInternalFieldPointer(proxy, 0, &targetPersistent);
   //Nan::SetInternalFieldPointer(&targetPersistent, 0, proxy);
 
-  targetPersistent.SetWeak(data, NULL, Nan::WeakCallbackType::kInternalFields);
+  targetPersistent.SetWeak(&proxy, NULL, Nan::WeakCallbackType::kParameter);
 
   info.GetReturnValue().Set(proxy);
 }
