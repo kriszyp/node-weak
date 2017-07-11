@@ -16,6 +16,7 @@
 
 #include <stdlib.h>
 #include <nan.h>
+#include <iostream>
 
 using namespace v8;
 
@@ -63,22 +64,27 @@ Local<Object> Unwrap(Local<Object> proxy) {
  */
 
 static void TargetCallback(const Nan::WeakCallbackInfo<proxy_container> &info) {
+  std::cout << "target callback\n";
   Nan::HandleScope scope;
   proxy_container *cont = info.GetParameter();
+  std::cout << "doing cleanup\n";
 
   // clean everything up
   Local<Object> proxy = Nan::New<Object>(cont->proxy);
   Nan::SetInternalFieldPointer(proxy, 0, NULL);
-  cont->proxy.Reset();
+  // cont->proxy.Reset();
+  std::cout << "finished reset\n";
   delete cont;
+  std::cout << "deleted container\n";
 }
 
 /**
  * `_create(obj)` JS function.
  */
 
-NAN_METHOD(Create) {
+NAN_METHOD(Create) {\
   if (!info[0]->IsObject()) return Nan::ThrowTypeError("Object expected");
+  std::cout << "creating weak\n";
 
   proxy_container *cont = new proxy_container();
 
@@ -91,6 +97,7 @@ NAN_METHOD(Create) {
   cont->target.SetWeak(cont, TargetCallback, Nan::WeakCallbackType::kParameter);
 
   info.GetReturnValue().Set(proxy);
+  std::cout << "created weak\n";
 }
 
 /**
