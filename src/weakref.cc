@@ -162,18 +162,6 @@ NAN_MODULE_INIT(Initialize) {
 
   Local<ObjectTemplate> p = Nan::New<ObjectTemplate>();
   proxyClass.Reset(p);
-  Nan::SetNamedPropertyHandler(p,
-                               WeakNamedPropertyGetter,
-                               WeakNamedPropertySetter,
-                               WeakNamedPropertyQuery,
-                               WeakNamedPropertyDeleter,
-                               WeakPropertyEnumerator);
-  Nan::SetIndexedPropertyHandler(p,
-                                 WeakIndexedPropertyGetter,
-                                 WeakIndexedPropertySetter,
-                                 WeakIndexedPropertyQuery,
-                                 WeakIndexedPropertyDeleter,
-                                 WeakPropertyEnumerator);
   p->SetInternalFieldCount(1);
 
   Nan::SetMethod(target, "get", Get);
