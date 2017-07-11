@@ -63,7 +63,7 @@ Local<Object> Unwrap(Local<Object> proxy) {
  * Weakref callback function. Invokes the "global" callback function.
  */
 
-static void TargetCallback(const Nan::WeakCallbackInfo<proxy_container> &info) {
+static void TargetCallback(const Nan::WeakCallbackInfo<Nan::Persistent<Object>> &info) {
   std::cout << "target callback\n";
   /*Nan::HandleScope scope;
   proxy_container *cont = info.GetParameter();
@@ -92,7 +92,7 @@ NAN_METHOD(Create) {\
   //Nan::SetInternalFieldPointer(proxy, 0, targetPersistent);
   //Nan::SetInternalFieldPointer(&targetPersistent, 0, proxy);
 
-  targetPersistent->SetWeak(&proxy, TargetCallback, Nan::WeakCallbackType::kParameter);
+  targetPersistent->SetWeak(targetPersistent, TargetCallback, Nan::WeakCallbackType::kParameter);
   //targetPersistent->MarkIndependent();
 
   info.GetReturnValue().Set(proxy);
