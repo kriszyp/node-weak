@@ -89,13 +89,11 @@ NAN_METHOD(Create) {\
   Local<Object> proxy = Nan::New<ObjectTemplate>(proxyClass)->NewInstance();
   Nan::Persistent<Object> *targetPersistent = new Nan::Persistent<Object>();
   targetPersistent->Reset(_target);
-  std::cout << "created persistent\n";
   Nan::SetInternalFieldPointer(proxy, 0, targetPersistent);
   //Nan::SetInternalFieldPointer(&targetPersistent, 0, proxy);
-  std::cout << "set internal\n";
 
   targetPersistent->SetWeak(&proxy, NULL, Nan::WeakCallbackType::kParameter);
-  std::cout << "setweak\n";
+  targetPersistent->MarkIndependent()
 
   info.GetReturnValue().Set(proxy);
 }
@@ -130,7 +128,8 @@ NAN_METHOD(Get) {
   std::cout << "start get\n";
   WEAKREF_FIRST_ARG
   if (!IsDead(proxy))
-  info.GetReturnValue().Set(Unwrap(proxy));
+  //info.GetReturnValue().Set(Unwrap(proxy));
+  info.GetReturnValue().SetUndefined()
   std::cout << "finished get\n";
 }
 
