@@ -49,7 +49,7 @@ Local<Object> Unwrap(Local<Object> proxy) {
   Nan::Persistent<Object> *targetPersistent = reinterpret_cast<Nan::Persistent<Object>*>(
     Nan::GetInternalFieldPointer(proxy, 0)
   );
-  Local<Object> _target = Nan::New<Object>(targetPersistent);
+  Local<Object> _target = Nan::New<Object>(*targetPersistent);
   return _target;
 }
 
@@ -87,11 +87,11 @@ NAN_METHOD(Create) {\
 
   Local<Object> _target = info[0].As<Object>();
   Local<Object> proxy = Nan::New<ObjectTemplate>(proxyClass)->NewInstance();
-  Nan::Persistent<Object> targetPersistent;
-  targetPersistent.Reset(_target);
-  Nan::SetInternalFieldPointer(proxy, 0, targetPersistent);
+  Nan::Persistent<Object> targetPersistent(_target);
+  //targetPersistent.Reset(_target);
+  Nan::SetInternalFieldPointer(proxy, 0, &targetPersistent);
 
-  cont->target.SetWeak(cont, NULL);
+  targetPersistent.SetWeak(proxy, NULL);
 
   info.GetReturnValue().Set(proxy);
 }
